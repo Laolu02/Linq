@@ -69,46 +69,38 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/auth",
+    signIn: "/",
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      if (account?.provider == "google") {
-        const User = await prisma.users.findFirst({
+      if (account?.provider === "google" || account?.provider === "github") {
+      try {
+        const existingUser = await prisma.users.findUnique({
           where: { email: user.email! },
         });
-        if (User) {
+
+        if (existingUser) {
           return true;
         }
+
         await prisma.users.create({
           data: {
             email: user.email!,
             name: user.name!,
-            password: "oauth-user",
-            age: null!,
-            image: user.image!,
+            image: user.image || null,
+            password: "oauth-user", 
+            age: null,
           },
         });
+
+        return true;
+      } catch (error) {
+        console.error(`Error in ${account?.provider} sign in:`, error);
+        return false; 
       }
-      if (account?.provider == "github") {
-        const User = await prisma.users.findFirst({
-          where: { email: user.email! },
-        });
-        if (User) {
-          return true;
-        }
-        await prisma.users.create({
-          data: {
-            email: user.email!,
-            name: user.name!,
-            password: "oauth-user",
-            age: null!,
-            image: user.image!,
-          },
-        });
-      }
-      return true;
-    },
+    }
+    return true;
+  },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
