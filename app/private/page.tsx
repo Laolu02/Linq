@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import PrivateChat from '@/components/PrivateChat';
 
 
-function page() {
+function Page() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const recipient= {
@@ -37,4 +37,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

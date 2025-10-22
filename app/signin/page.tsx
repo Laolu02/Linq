@@ -10,7 +10,7 @@ import Link from "next/link"
 type Providers = Record<string, ClientSafeProvider>;
 
 export default function LoginPage() {
-    const [_providers, setProviders] = useState<Providers|null>(null)
+    const [, setProviders] = useState<Providers|null>(null)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError]= useState('')

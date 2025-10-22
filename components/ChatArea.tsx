@@ -17,11 +17,11 @@ type Message={
     image?: string | null;
     
 }
-interface User{
-    id: number
+// interface User{
+//     id: number
    
-    receiverId: string
-}
+//     receiverId: string
+// }
 // interface StoredMessage extends User {
     
 //     createdAt: Date;
