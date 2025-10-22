@@ -79,7 +79,7 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     }, [messages]);
 
     useEffect(()=>{
-        const socket = io(process.env.SOCKET_URL!,{
+        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!,{
         transports:["websocket"],
         withCredentials: true,
       });
