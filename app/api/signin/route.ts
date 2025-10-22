@@ -18,7 +18,8 @@ export async function POST(request: Request) {
         if (!isPasswordValid) {
         return new NextResponse('Invalid email or password', { status: 401 });
         }
-        const {password:_password, ...userWithoutPass} = user
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {password:_, ...userWithoutPass} = user
         return NextResponse.json(userWithoutPass, { status: 200 })
     } catch (error:unknown) {
         if (error === 'P2002') { 

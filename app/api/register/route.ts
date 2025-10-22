@@ -12,7 +12,8 @@ export async function POST(request: Request) {
         const user = await prisma.users.create({
             data:{name,email, password:hashedPassword , image:`/dp.jpeg`},
         })
-        const {password:_password, ...userWithoutPass} =user
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {password:_, ...userWithoutPass} =user
         return NextResponse.json(userWithoutPass, { status: 201 })
     } catch (error:unknown) {
         if (error === 'P2002') { 

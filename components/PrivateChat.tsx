@@ -48,7 +48,7 @@ const fetchMessagesFor = async (userId1: string, userId2: string): Promise<Store
 function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     const[message,setMessage]= useState('');
     const[messages,setMessages]= useState<Message[]>([ ]);
-    const[_myid, setMyid]= useState<string|undefined>(undefined);
+    //const[myid, setMyid]= useState<string|undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const socketRef = useRef<Socket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -81,9 +81,9 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     useEffect(()=>{
         const socket= io(process.env.SOCKET_URL);
         socketRef.current = socket;
-        socket.on('connect',( )=>{
-            setMyid(socket.id||'')
-        })
+        // socket.on('connect',( )=>{
+        //     setMyid(socket.id||'')
+        // })
         socket.on('chat message', ({text, senderId,receiverId}:{text: string, senderId:string, receiverId:string,})=>{
            if (
           (senderId === currentUser.id && receiverId === recipient.id) ||

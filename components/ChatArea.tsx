@@ -22,10 +22,10 @@ interface User{
    
     receiverId: string
 }
-interface StoredMessage extends User {
+// interface StoredMessage extends User {
     
-    createdAt: Date;
-}
+//     createdAt: Date;
+// }
 // interface ChatAreaProps {
 //   currentUser: any 
 //   recipient: any 
@@ -47,17 +47,17 @@ interface StoredMessage extends User {
 function ChatArea() {
     const [message,setMessage] = useState('');
     const[ messages,setMessages]= useState<Message[]>([ ]);
-    const[ _myid, setMyid]= useState<string|undefined>(undefined);
-    const [isLoading, _setIsLoading] = useState(false);
+   // const[ myid, setMyid]= useState<string|undefined>(undefined);
+    const [isLoading,] = useState(false);
    
 
     
     useEffect(() => {
       socket = io(process.env.SOCKET_URL);
-      socket.on("connect", () => {
-        console.log('connected')
-        setMyid(socket.id || "");
-      });
+      // socket.on("connect", () => {
+      //   console.log('connected')
+      //   setMyid(socket.id || "");
+      // });
 
       socket.on(
       'chat message',
