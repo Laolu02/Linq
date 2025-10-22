@@ -56,7 +56,7 @@ function Navbar() {
   const UnauthLinks = (
     <>
      <Link href="/register" className="px-4 py-2 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 hover:text-blue-600 transition">Sign Up</Link>
-    <Link href="/signin" className="px-4 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition">Sign In</Link>
+    <Link href="/signin" className="px-4 py-2 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 hover:text-blue-600 transition">Sign In</Link>
           {/*<button onClick={() => signIn(undefined, { callbackUrl: '/chat' })}
               className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-white hover:text-blue-800  active:scale-95 transition shadow-sm hover:shadow-md">
               <Link href="/signin">Sign In</Link>

@@ -69,7 +69,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/",
+    signIn: "/auth",
+    error:'/auth/error'
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
@@ -120,11 +121,30 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async redirect({ url, baseUrl }) {
-     
+     async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+      if (new URL(url).origin === baseUrl) {
+        return url;
+      }
       return `${baseUrl}/chat`;
     },
   },
+  
+  secret: process.env.NEXTAUTH_SECRET,
+  
+  cookies: {
+  sessionToken: {
+    name: `__Secure-next-auth.session-token`,
+    options: {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+    },
+  },
+},
   events: {
     async signIn(message) {
       console.log("SIGN IN EVENT:", message);
