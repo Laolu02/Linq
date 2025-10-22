@@ -1,0 +1,203 @@
+'use client'
+
+import React, { useEffect, useRef, useState } from 'react'
+import io, { Socket } from 'socket.io-client';
+import { IoSend } from 'react-icons/io5';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import Image from 'next/image';
+
+
+//let socket :  Socket
+interface Message{
+    text: string
+    self: boolean
+    time: string
+    
+}
+interface User{
+    id: number
+    senderId: string
+    receiverId: string
+}
+interface StoredMessage extends User {
+    text: string;
+    createdAt: Date;
+}
+interface ChatAreaProps {
+  currentUser: any 
+  recipient: any 
+}
+const fetchMessagesFor = async (userId1: string, userId2: string): Promise<StoredMessage[]> => {
+    console.log(`[API] Fetching messages between ${userId1} and ${userId2}...`);
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const simulatedHistory: StoredMessage[] = [
+    
+            ];
+            resolve(simulatedHistory);
+        }, 500); 
+    });
+};
+
+function GroupArea({currentUser, recipient}: ChatAreaProps) {
+    const[message,setMessage]= useState('');
+    const[messages,setMessages]= useState<Message[]>([ ]);
+    const[myid, setMyid]= useState<string|undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
+    const socketRef = useRef<Socket | null>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+     useEffect(()=>{
+        const loadMessages = async () => {
+            if(!currentUser?.id || !recipient?.id) return
+            setIsLoading(true);
+            const user1 = currentUser.id;
+            const user2 = recipient.id;
+            try {
+                const history = await fetchMessagesFor(user1, user2);
+                const displayMessages = history.map(msg =>({
+                    text:msg.text,self: msg.senderId === currentUser.id, time: msg.createdAt.toLocaleTimeString([],{hour:'2-digit', minute:'2-digit'}),
+                }))
+                setMessages(displayMessages);
+            } catch (error) {
+                console.error("Failed to load chat history:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadMessages()
+    }, [currentUser?.id, recipient?.id]);
+    
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    useEffect(()=>{
+        const socket= io(process.env.SOCKET_URL);
+        socketRef.current = socket;
+        socket.on('connect',( )=>{
+            setMyid(socket.id||'')
+        })
+        socket.on('chat message', ({text, senderId,receiverId}:{text: string, senderId:string, receiverId:string,})=>{
+           if (
+          (senderId === currentUser.id && receiverId === recipient.id) ||
+          (senderId === recipient.id && receiverId === currentUser.id)
+        ) {setMessages((prev)=>[...prev, {text,time: new Date().toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' }),
+           self: senderId === currentUser.id , },])}
+        });
+        return ()=>{
+            socket.disconnect();
+        }; 
+    }, [currentUser?.id, recipient?.id]);
+
+
+    const sendMessage = ()=>{ 
+        if(!message.trim()) return;
+        if (!socketRef.current) return;
+            socketRef.current.emit('chat message', {text: message , senderId: currentUser.id,receiverId: recipient.id,});
+            setMessage('');
+    };
+     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    };
+  return (
+    <div className="flex flex-col gap-1 h-screen  bg-white bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl">
+        <div className="bg-white border-b rounded-t-xl border-gray-200 px-6 py-4 shadow-sm">
+          <div className="flex items-center justify-between max-w-5xl mx-auto">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                <Image
+                  src={recipient?.image || "/dp.jpeg"}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="rounded-full border-2 border-blue-500"
+                />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {recipient?.name || "User"}
+                </h2>
+                <p className="text-xs text-green-500 flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
+                  Online
+                </p>
+              </div>
+            </div>
+            <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-100 transition">
+              <BsThreeDotsVertical className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto px-4 py-6 max-w-5xl w-full mx-auto">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-500">Loading messages...</p>
+              </div>
+            </div>
+          ) : messages.length === 0 ? (
+            <div className="flex justify-center items-center h-full">
+              <div className="text-center font-serif">
+                <p className="text-gray-500 text-lg "> No messages yet</p>
+                <p className="text-gray-600 text-lg">
+                  Start a conversation now
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {messages.map((m, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-row text-sm sm:max-w-md px-4 py-3 p-2 mb-2 gap-2 w-fit max-w-[56%] break-words 
+                        ${
+                          m.self
+                            ? "ml-auto  bg-blue-300 text-right rounded-l-2xl rounded-br-2xl justify-end"
+                            : "mr-auto bg-blue-200 rounded-r-2xl rounded-bl-2xl  text-left justify-start"
+                        } text-shadow-black`}
+                >
+                  <p className=" text-sm leading-relaxed break-words">
+                    {m.text}
+                  </p>
+                  <p className="text-indigo-800 mt-3 text-xs opacity-70">
+                    {m.time}
+                  </p>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          )}
+        </div>
+        <div className="bg-white border-t rounded-b-xl border-gray-200 px-4 py-4 shadow-lg">
+          <div className="max-w-5xl mx-auto flex items-center space-x-3">
+            <input
+              type="text"
+              placeholder="Type a message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              className="flex-1 bg-gray-100 px-5 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 placeholder-gray-500"
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!message.trim()}
+              className={`p-3 rounded-full transition-all duration-200 ${
+                message.trim()
+                  ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg active:scale-95"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              <IoSend className="w-5 h-5" />
+            </button>
+          </div>
+        </div> 
+    </div>
+  );
+}
+
+export default GroupArea
