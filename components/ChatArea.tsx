@@ -53,7 +53,10 @@ function ChatArea() {
 
     
     useEffect(() => {
-      socket = io(process.env.SOCKET_URL);
+      socket = io(process.env.SOCKET_URL!,{
+        transports:["websocket"],
+        withCredentials: true,
+      });
       // socket.on("connect", () => {
       //   console.log('connected')
       //   setMyid(socket.id || "");

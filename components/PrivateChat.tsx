@@ -79,7 +79,10 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     }, [messages]);
 
     useEffect(()=>{
-        const socket= io(process.env.SOCKET_URL);
+        const socket = io(process.env.SOCKET_URL!,{
+        transports:["websocket"],
+        withCredentials: true,
+      });
         socketRef.current = socket;
         // socket.on('connect',( )=>{
         //     setMyid(socket.id||'')
