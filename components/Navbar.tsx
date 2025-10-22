@@ -12,7 +12,7 @@ import { IoIosChatboxes } from "react-icons/io";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const {data:session, status} = useSession();
+  const {data:_session, status} = useSession();
 
 
   const isAuthenticated = status === 'authenticated';

@@ -14,18 +14,24 @@ interface Message{
     time: string
     
 }
-interface User{
-    id: number
+interface Users{
+    id: string
     senderId: string
     receiverId: string
 }
-interface StoredMessage extends User {
+interface StoredMessage extends Users {
     text: string;
     createdAt: Date;
 }
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+}
 interface ChatAreaProps {
-  currentUser: any 
-  recipient: any 
+  currentUser: User;
+  recipient: User;
 }
 const fetchMessagesFor = async (userId1: string, userId2: string): Promise<StoredMessage[]> => {
     console.log(`[API] Fetching messages between ${userId1} and ${userId2}...`);
@@ -39,10 +45,10 @@ const fetchMessagesFor = async (userId1: string, userId2: string): Promise<Store
     });
 };
 
-function GroupArea({currentUser, recipient}: ChatAreaProps) {
+function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     const[message,setMessage]= useState('');
     const[messages,setMessages]= useState<Message[]>([ ]);
-    const[myid, setMyid]= useState<string|undefined>(undefined);
+    const[_myid, setMyid]= useState<string|undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const socketRef = useRef<Socket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -121,7 +127,7 @@ function GroupArea({currentUser, recipient}: ChatAreaProps) {
                 <h2 className="text-lg font-semibold text-gray-900">
                   {recipient?.name || "User"}
                 </h2>
-                <p className="text-xs text-green-500 flex items-center">
+                <p className="text-xs text-grey-900 flex items-center">
                   <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
                   Online
                 </p>
@@ -200,4 +206,4 @@ function GroupArea({currentUser, recipient}: ChatAreaProps) {
   );
 }
 
-export default GroupArea
+export default PrivateChat

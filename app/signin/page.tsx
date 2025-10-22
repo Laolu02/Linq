@@ -10,7 +10,7 @@ import Link from "next/link"
 type Providers = Record<string, ClientSafeProvider>;
 
 export default function LoginPage() {
-    const [providers, setProviders] = useState<Providers|null>(null)
+    const [_providers, setProviders] = useState<Providers|null>(null)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError]= useState('')
@@ -97,7 +97,7 @@ export default function LoginPage() {
               </form>
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account?{"  "}
+                  Don&apos;t have an account?{"  "}
                   <a
                     className="text-blue-600 hover:underline cursor-pointer font-medium"
                   >

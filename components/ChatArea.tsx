@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import io, { Socket } from 'socket.io-client';
 import { IoSend } from 'react-icons/io5';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import Image from 'next/image';
 
 
 let socket :  Socket
@@ -29,7 +30,8 @@ interface StoredMessage extends User {
 //   currentUser: any 
 //   recipient: any 
 // }
-const fetchMessagesFor = async (userId1: string, userId2: string): Promise<StoredMessage[]> => {
+
+/*const fetchMessagesFor = async (userId1: string, userId2: string): Promise<StoredMessage[]> => {
     console.log(`[API] Fetching messages between ${userId1} and ${userId2}...`);
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -39,14 +41,14 @@ const fetchMessagesFor = async (userId1: string, userId2: string): Promise<Store
             resolve(simulatedHistory);
         }, 500); 
     });
-};
+};*/
 
 
 function ChatArea() {
     const [message,setMessage] = useState('');
     const[ messages,setMessages]= useState<Message[]>([ ]);
-    const[ myid, setMyid]= useState<string|undefined>(undefined);
-    const [isLoading, setIsLoading] = useState(false);
+    const[ _myid, setMyid]= useState<string|undefined>(undefined);
+    const [isLoading, _setIsLoading] = useState(false);
    
 
     
@@ -119,7 +121,7 @@ function ChatArea() {
               <div
                 key={index}
                 className={`flex gap-2 mb-3 ${m.self ? "justify-end" : "justify-start"}`}>
-                {!m.self && <img src={ m.image||"/dp.jpeg"} alt="Avatar" className='w-8 h-8 rounded-full self-end mb-1 flex-shrink-0'/>}
+                {!m.self && <Image src={ m.image||"/dp.jpeg"} alt="Avatar" className='w-8 h-8 rounded-full self-end mb-1 flex-shrink-0'/>}
                 <div className={`flex flex-col text-sm sm:max-w-md px-3 py-2 mb-1 max-w-[56%] shadow-sm
                         ${
                           m.self
@@ -132,7 +134,7 @@ function ChatArea() {
                     </p>
                     <div></div>
                 </div>
-                {m.self && <img src={ m.image||"/dp.jpeg"} alt="Avatar" className='w-8 h-8 rounded-full self-end mb-1'/>}
+                {m.self && <Image src={ m.image||"/dp.jpeg"} alt="Avatar" className='w-8 h-8 rounded-full self-end mb-1'/>}
               </div>
             ))}
             <div />

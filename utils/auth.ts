@@ -9,6 +9,7 @@ import bcrypt from 'bcryptjs';
 declare module "next-auth"{
     interface Session{
         user:{
+            image: string | null | undefined;
             name:string,
             email:string,
             age: number,

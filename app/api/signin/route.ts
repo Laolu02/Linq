@@ -18,10 +18,10 @@ export async function POST(request: Request) {
         if (!isPasswordValid) {
         return new NextResponse('Invalid email or password', { status: 401 });
         }
-        const {password:_, ...userWithoutPass} = user
+        const {password:_password, ...userWithoutPass} = user
         return NextResponse.json(userWithoutPass, { status: 200 })
-    } catch (error:any) {
-        if (error.code === 'P2002') { 
+    } catch (error:unknown) {
+        if (error === 'P2002') { 
             return new NextResponse('User with this email already exists', { status: 409 })
         }
         console.error('Registration error:', error)
