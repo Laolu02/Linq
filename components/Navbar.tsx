@@ -56,11 +56,11 @@ function Navbar() {
   const UnauthLinks = (
     <>
      <Link href="/register" className="px-4 py-2 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 hover:text-blue-600 transition">Sign Up</Link>
-          {/*<Link href="/signin" className="px-4 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition">Sign In</Link>*/}
-          <button onClick={() => signIn(undefined, { callbackUrl: '/chat' })}
+    <Link href="/signin" className="px-4 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition">Sign In</Link>
+          {/*<button onClick={() => signIn(undefined, { callbackUrl: '/chat' })}
               className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-white hover:text-blue-800  active:scale-95 transition shadow-sm hover:shadow-md">
               <Link href="/signin">Sign In</Link>
-        </button>
+        </button>*/}
     </>
   );
 
@@ -105,7 +105,7 @@ function Navbar() {
                 <Link href='/register' onClick={()=>setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition text-center border">
                   Sign Up
                 </Link>
-                <Link href="/login" onClick={()=>setMobileMenuOpen(false)} className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-center">
+                <Link href="/signin" onClick={()=>setMobileMenuOpen(false)} className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-center">
                     Sign In
                 </Link>
               </>

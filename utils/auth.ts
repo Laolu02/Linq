@@ -86,6 +86,7 @@ export const authOptions: NextAuthOptions = {
             name: user.name!,
             password: "oauth-user",
             age: null!,
+            image: user.image!,
           },
         });
       }
@@ -102,6 +103,7 @@ export const authOptions: NextAuthOptions = {
             name: user.name!,
             password: "oauth-user",
             age: null!,
+            image: user.image!,
           },
         });
       }
@@ -114,7 +116,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token, user }) {
-      const User = await prisma.users.findFirst({
+      const User = await prisma.users.findUnique({
         where: { email: session.user?.email! },
         select: { id: true },
       });
