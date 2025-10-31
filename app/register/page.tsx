@@ -28,7 +28,7 @@ export default function RegisterPage() {
                 body: JSON.stringify({name,email,password})
             })
             if (res.ok) {
-                const result= await signIn('credentials',{redirect:false, email,password,callbackUrl:'/chat',})
+                const result= await signIn('credentials',{redirect:false, email,password,callbackUrl:'/chats',})
                 if (result?.ok) {
                     router.push('/chat')
                 } else {
@@ -120,14 +120,14 @@ export default function RegisterPage() {
           <div className="flex-1 flex flex-col items-center justify-center lg:pl-8 lg:items-stretch mt-8 lg:mt-0">
             <div className="flex flex-col space-y-4 w-full max-w-md lg:max-w-none">
                 <button
-              onClick={() => signIn("google", { redirect:true, callbackUrl: "/chat" })}
+              onClick={() => signIn("google", { redirect:true, callbackUrl: "/chats" })}
               className="flex items-center justify-center px-8 py-4 text-lg font-semibold bg-white border border-gray-300 text-gray-700 rounded-xl shadow-lg hover:shadow-xl transition duration-300"
             >
               <span className="mr-2 text-sm"><FcGoogle className="mr-3 text-2xl"/></span>
               Sign Up with Google
             </button>
             <button
-              onClick={() => signIn("github", { redirect: true, callbackUrl: "/chat"})}
+              onClick={() => signIn("github", { redirect: true, callbackUrl: "/chats"})}
               className="flex items-center justify-center px-8 py-4 text-lg font-semibold bg-gray-800 text-white rounded-xl shadow-lg hover:bg-gray-900 transition duration-300"
             >
               <span className="mr-2 text-"><FaGithub className="mr-3 text-2xl"/></span>

@@ -37,7 +37,7 @@ export default function LoginPage() {
             setError("invalid email or password")
          } else {
             if (result?.ok) {
-                window.location.href = "/chat";
+                window.location.href = "/chats";
             }
          }
     }
@@ -81,7 +81,7 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a strong password"
+                    placeholder="Enter password"
                     className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-700 text-black text-sm"
                   />
                 </div>
@@ -115,7 +115,7 @@ export default function LoginPage() {
             <div className="flex-1 flex flex-col items-center justify-center lg:pl-8 lg:items-stretch mt-8 lg:mt-0">
               <div className="flex flex-col space-y-4 w-full max-w-md lg:max-w-none">
                 <button
-                  onClick={() => signIn("google", { callbackUrl: "/chat" })}
+                  onClick={() => signIn("google", { callbackUrl: "/chats" })}
                   className="flex items-center justify-center px-8 py-4 text-lg font-semibold bg-white border border-gray-300 text-gray-700 rounded-xl shadow-lg hover:shadow-xl transition duration-300"
                 >
                   <span className="mr-2 text-sm">
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 </button>
                 <button
                   onClick={() =>
-                    signIn("github", { redirect: true, callbackUrl: "/chat" })
+                    signIn("github", { redirect: true, callbackUrl: "/chats" })
                   }
                   className="flex items-center justify-center px-8 py-4 text-lg font-semibold bg-gray-800 text-white rounded-xl shadow-lg hover:bg-gray-900 transition duration-300"
                 >

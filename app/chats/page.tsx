@@ -1,10 +1,10 @@
-import ChatArea from '@/components/ChatArea'
+import ChatsPage from '@/components/ChatList'
 import React from 'react'
 
 function page() {
   return (
     <div>
-        <ChatArea/>
+        <ChatsPage/>
     </div>
   )
 }

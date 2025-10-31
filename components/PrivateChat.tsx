@@ -19,9 +19,16 @@ interface Users{
     senderId: string
     receiverId: string
 }
-interface StoredMessage extends Users {
+interface StoredMessage {
+    id: string;
     text: string;
-    createdAt: Date;
+    message:string;
+    type: string
+    senderId: string;
+    receiverId?: string;
+    conversationId?: string;
+    groupId?: string;
+    createdAt: Date
 }
 interface User {
   id: string;
@@ -31,18 +38,23 @@ interface User {
 }
 interface ChatAreaProps {
   currentUser: User;
-  recipient: User;
+  recipient: User | null;
 }
 const fetchMessagesFor = async (userId1: string, userId2: string): Promise<StoredMessage[]> => {
     console.log(`[API] Fetching messages between ${userId1} and ${userId2}...`);
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const simulatedHistory: StoredMessage[] = [
-    
-            ];
-            resolve(simulatedHistory);
-        }, 500); 
-    });
+    try {
+      const res = await fetch(`/api/messages?userId1=${userId1}&userId2=${userId2}`);
+    if (!res.ok) {
+            const errorData = await res.json();
+            console.error(errorData.error || `HTTP error! Status: ${res.status}`);
+            return [];
+        }
+    const messages: StoredMessage[] = await res.json();
+    return messages;
+    } catch (error) {
+      console.error("Error fetching private messages:", error);
+       return [];
+    }
 };
 
 function PrivateChat({currentUser, recipient}: ChatAreaProps) {
@@ -61,8 +73,9 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
             const user2 = recipient.id;
             try {
                 const history = await fetchMessagesFor(user1, user2);
-                const displayMessages = history.map(msg =>({
-                    text:msg.text,self: msg.senderId === currentUser.id, time: msg.createdAt.toLocaleTimeString([],{hour:'2-digit', minute:'2-digit'}),
+                const messagesArray = Array.isArray(history) ? history : [];
+                const displayMessages = messagesArray.map(msg =>({
+                    text:msg.message,self: msg.senderId === currentUser.id, time: new Date(msg.createdAt).toLocaleTimeString([],{hour:'2-digit', minute:'2-digit'}),
                 }))
                 setMessages(displayMessages);
             } catch (error) {
@@ -79,20 +92,25 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     }, [messages]);
 
     useEffect(()=>{
+      if (!currentUser?.id || !recipient?.id) return;
         const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!,{
         transports:["websocket"],
         withCredentials: true,
       });
         socketRef.current = socket;
-        // socket.on('connect',( )=>{
-        //     setMyid(socket.id||'')
-        // })
-        socket.on('chat message', ({text, senderId,receiverId}:{text: string, senderId:string, receiverId:string,})=>{
-           if (
-          (senderId === currentUser.id && receiverId === recipient.id) ||
-          (senderId === recipient.id && receiverId === currentUser.id)
+        socket.emit('register', currentUser.id);
+
+        socket.on('newMessage', ({text, senderId,receiverId}:{text: string, senderId:string, receiverId:string,})=>{
+          const isMessageForMe = receiverId === currentUser.id && senderId === recipient.id;
+          const isMessageFromMe = senderId === currentUser.id && receiverId === recipient.id;
+           if ( isMessageForMe
+          // (senderId === currentUser.id && receiverId === recipient.id) ||
+          // (senderId === recipient.id && receiverId === currentUser.id)
         ) {setMessages((prev)=>[...prev, {text,time: new Date().toLocaleTimeString([],{ hour: '2-digit', minute: '2-digit' }),
-           self: senderId === currentUser.id , },])}
+           self: false , },])}
+           else if (isMessageFromMe) {
+            
+           }
         });
         return ()=>{
             socket.disconnect();
@@ -100,10 +118,48 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     }, [currentUser?.id, recipient?.id]);
 
 
-    const sendMessage = ()=>{ 
-        if(!message.trim()) return;
+    const postMessage= async (messageData: {
+      senderId: any; text: string, receiverId: string 
+       }) => {
+      try {
+        const res = await fetch('/api/messages',{
+          method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: messageData.text,
+                    senderId: messageData.senderId,
+                    receiverId: messageData.receiverId,
+                }),
+        });
+        if (!res.ok) {
+                const error = await res.json();
+                console.error("Failed to persist message:", error.error);
+            } else {
+                console.log("Message persisted successfully.");
+            }
+      } catch (error) {
+        console.error("API error during message persistence:", error);
+      }
+    }
+    const sendMessage = async ()=>{ 
+      const messageText= message.trim()
+        if(!messageText) return;
         if (!socketRef.current) return;
-            socketRef.current.emit('chat message', {text: message , senderId: currentUser.id,receiverId: recipient.id,});
+        if (!recipient) {
+          console.error("Recipient is not defined. Cannot send message.");
+          return;
+        }
+        const messageData={ text:messageText, senderId: currentUser.id, receiverId: recipient.id,}
+            socketRef.current.emit('privateMessage', messageData);
+            postMessage({ text:messageText, receiverId:recipient.id, senderId:currentUser.id,});
+
+            setMessages((prev)=>[...prev,{
+              id:Date.now(), text:messageText, 
+              time: new Date().toLocaleTimeString([],{hour:'2-digit', minute:'2-digit'}),
+            self:true, senderId:currentUser.id
+            },]);
             setMessage('');
     };
      const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -163,11 +219,11 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
               {messages.map((m, index) => (
                 <div
                   key={index}
-                  className={`flex flex-row text-sm sm:max-w-md px-4 py-3 p-2 mb-2 gap-2 w-fit max-w-[56%] break-words 
+                  className={`flex flex-row text-md sm:max-w-md px-4 py-3 p-2 mb-2 gap-2 w-fit max-w-[56%] break-words 
                         ${
                           m.self
-                            ? "ml-auto  bg-blue-300 text-right rounded-l-2xl rounded-br-2xl justify-end"
-                            : "mr-auto bg-blue-200 rounded-r-2xl rounded-bl-2xl  text-left justify-start"
+                            ? "ml-auto  bg-blue-500 text-right text-lg rounded-l-2xl rounded-br-2xl font-semibold justify-end text-white"
+                            : "mr-auto bg-gray-200 rounded-r-2xl text-lg rounded-bl-2xl  text-left font-semibold justify-start text-gray-950"
                         } text-shadow-black`}
                 >
                   <p className=" text-sm leading-relaxed break-words">

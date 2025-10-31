@@ -19,27 +19,106 @@ enum Gender {
 }
 
 model Users {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  email     String     @unique
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String    @unique
   name      String?
   age       Int?
   password  String?
   image     String?
-  createdAt DateTime   @default(now())
+  isOnline  Boolean   @default(false)
+  lastSeen  DateTime? @default(now())
+  createdAt DateTime  @default(now())
   updatedAt DateTime?
-  message   Messages[]
-  profile   Profile?
-  account Account[]
+
+  sentMessages       Messages[]           @relation("SentMessages")
+  conversations      ConversationMember[]
+  groupMemberships   GroupMember[]
+  createdGroups      Group[]              @relation("GroupCreator")
+  profile            Profile?
+  account            Account[]
+  MessageReadReceipt MessageReadReceipt[]
+
+  Messages Messages[] @relation("ReceivedMessages")
+}
+
+model Conversation {
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  type      ConversationType     @default(PRIVATE)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  members   ConversationMember[]
+  messages  Messages[]
+}
+
+model ConversationMember {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String    @db.ObjectId
+  userId         String    @db.ObjectId
+  joinedAt       DateTime  @default(now())
+  lastReadAt     DateTime?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         Users        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+}
+
+model Group {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  avatar      String?
+  isPublic    Boolean
+  creatorId   String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creator  Users         @relation("GroupCreator", fields: [creatorId], references: [id])
+  members  GroupMember[]
+  messages Messages[]
+}
+
+model GroupMember {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  groupId    String          @db.ObjectId
+  userId     String          
+  role       GroupMemberRole @default(MEMBER)
+  joinedAt   DateTime        @default(now())
+  lastReadAt DateTime?
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
 }
 
 model Messages {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  message    String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime?
-  senderId   String    @db.ObjectId
-  receiverId String    @db.ObjectId
-  sender     Users     @relation(fields: [senderId], references: [id])
+  id             String               @id  @default(auto()) @map("_id") @db.ObjectId 
+  message        String
+  conversationId String?              @db.ObjectId
+  groupId        String?              @db.ObjectId
+  isDeleted      Boolean @default(false)
+  isEdited       Boolean @default(false)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime?            @updatedAt
+  senderId       String               @db.ObjectId
+  sender         Users                @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId     String?  @db.ObjectId 
+  receiver       Users? @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete:Cascade)
+  conversation   Conversation?        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  chatRoom       Group?               @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  readReceipts   MessageReadReceipt[]
+}
+
+model MessageReadReceipt {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  messageId String   @db.ObjectId
+  userId    String   @db.ObjectId
+  readAt    DateTime @default(now())
+
+  message Messages @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
 }
 
 model Profile {
@@ -53,19 +132,39 @@ model Profile {
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String   @unique @db.ObjectId
+  userId            String  @unique @db.ObjectId
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?  
-  access_token      String?  
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?  
+  id_token          String?
   session_state     String?
 
   user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+}
+
+enum ConversationType {
+  PRIVATE
+  GROUP
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  FILE
+  SYSTEM
+}
+
+enum GroupMemberRole {
+  ADMIN
+  MODERATOR
+  MEMBER
 }

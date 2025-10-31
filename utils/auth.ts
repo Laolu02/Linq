@@ -1,14 +1,15 @@
 import prisma from "@/prisma/connection.prisma";
-import NextAuth, { NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import  { NextAuthOptions } from "next-auth";
 import CredentialsProvider  from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google"
 import GitHubProvider from "next-auth/providers/github";
 import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 declare module "next-auth"{
     interface Session{
         user:{
+            createdAt: string | number | Date;
             image: string | null | undefined;
             name:string,
             email:string,
@@ -24,6 +25,7 @@ export const authOptions: NextAuthOptions = {
   debug:true,
   session: {
     strategy: "jwt",
+    maxAge: 10*24*60*60
   },  
   providers: [
     CredentialsProvider({
@@ -69,23 +71,38 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/auth",
+    signIn: "/signin",
     error:'/auth/error'
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      if (account?.provider === "google" || account?.provider === "github") {
-      try {
-        const existingUser = await prisma.users.findUnique({
+
+      if (!user.email) return false;
+      if (account?.provider === 'credentials') {
+        if (!user?.id) {
+            console.error('Credentials user object missing ID after successful authorization.');
+            return false;
+        }
+        return true;
+    }
+      const existingUser = await prisma.users.findUnique({
           where: { email: user.email! },
         });
 
         if (existingUser) {
           return true;
         }
-
+      let newUserid:string;
+      if (account?.provider === "google" || account?.provider === "github") {
+      newUserid = user.id;
+    } else {
+      newUserid = uuidv4();
+    }
+        
+      try {
         await prisma.users.create({
           data: {
+            //id: newUserid,
             email: user.email!,
             name: user.name!,
             image: user.image || null,
@@ -98,22 +115,25 @@ export const authOptions: NextAuthOptions = {
       } catch (error) {
         console.error(`Error in ${account?.provider} sign in:`, error);
         return false; 
-      }
     }
     return true;
   },
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token, user }) {
+    // async jwt({ token, user }) {
+    //   if (user) {
+    //     token.id = user.id;
+    //   }
+    //   return token;
+    // },
+    async session({ session, token }) {
       const User = await prisma.users.findUnique({
         where: { email: session.user?.email! },
         select: { id: true },
       });
       session.user.id = User?.id!;
+      session.user.name = session.user.name!;
+      session.user.email = session.user.email!;
+      session.user.image = session.user.image!;
+
       if (token.id) {
         session.user.id = token.id as string;
       }
@@ -128,23 +148,42 @@ export const authOptions: NextAuthOptions = {
       if (new URL(url).origin === baseUrl) {
         return url;
       }
-      return `${baseUrl}/chat`;
+      //return `${baseUrl}/chat`;
+      return baseUrl;
     },
   },
   
   secret: process.env.NEXTAUTH_SECRET,
   
+  useSecureCookies: process.env.NODE_ENV === "production",
   cookies: {
-  sessionToken: {
-    name: `__Secure-next-auth.session-token`,
-    options: {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
+    sessionToken: {
+      name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === "production"
+      }
+    },
+    callbackUrl: {
+      name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === "production"
+      }
+    },
+    csrfToken: {
+      name: `${process.env.NODE_ENV === "production" ? "__Host-" : ""}next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === "production"
+      }
     },
   },
-},
   events: {
     async signIn(message) {
       console.log("SIGN IN EVENT:", message);
