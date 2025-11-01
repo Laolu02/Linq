@@ -12,15 +12,20 @@ export async function GET(request:NextRequest) {
             return NextResponse.json(
                  { error: 'groupId is required' },
                 { status: 400 }
-            )
+            );
         }
+        let groupIdToFilter: string;
+        if (typeof groupId !== 'string' && 'toString' in groupId) {
+                groupIdToFilter = groupId;
+            } else {
+                groupIdToFilter = groupId;
+            }
         const messages= await prisma.messages.findMany({
-            where:{groupId: groupId, isDeleted:false},
+            where:{groupId:groupIdToFilter, isDeleted:false},
             orderBy:{createdAt:"asc"},
-
             include:{sender:{
                 select:{id:true, name:true, email:true, image: true}
-            }}
+            }},
         })
         return NextResponse.json({messages})
     } catch (error) {
