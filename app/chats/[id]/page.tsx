@@ -1,13 +1,13 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+//import { useParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ChatArea from '@/components/ChatArea'
 
 
 export default function GroupChatPage() {
-  const params = useParams()
+ // const params = useParams()
   const { data: session } = useSession()
   const [group, {/*setGroup*/}] = useState(null)
 
