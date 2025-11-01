@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 //import prisma from "@/prisma/connection.prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,7 +15,7 @@ export async function GET (request:NextRequest) {
     console.log('Query params:', { userId, includePrivate, search });
 
 
-    const whereClause: any ={};
+    const whereClause: Prisma.GroupWhereInput ={};
     if (!includePrivate) {
         whereClause.isPublic = true;
     }

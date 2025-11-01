@@ -14,11 +14,11 @@ interface Message{
     time: string
     
 }
-interface Users{
-    id: string
-    senderId: string
-    receiverId: string
-}
+// interface Users{
+//     id: string
+//     senderId: string
+//     receiverId: string
+// }
 interface StoredMessage {
     id: string;
     text: string;
@@ -119,6 +119,7 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
 
 
     const postMessage= async (messageData: {
+      // eslint-disable-next-line
       senderId: any; text: string, receiverId: string 
        }) => {
       try {

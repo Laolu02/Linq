@@ -1,7 +1,7 @@
 "use client"
 
 import ChatArea from '@/components/ChatArea'
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation';
 
@@ -16,11 +16,11 @@ interface Group {
 function Page({params}: { params: { id: string }}) {
    const { data: session, status } = useSession();
    const router = useRouter();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const resolvedParams = use(params as any)as PageParams; 
    const groupId = resolvedParams.id;
-
    const [group, setGroup] = useState<Group|null>(null);
-   const [isLoadingGroup, setIsLoadingGroup] = useState(true);
+   const [{/*isLoadingGroup*/}, setIsLoadingGroup] = useState(true);
 
  
   React.useEffect(() => {

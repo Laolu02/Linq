@@ -3,7 +3,7 @@
 import ChatSideBar from '@/components/ChatSide'
 import React, { useState } from 'react'
 
-function page() {
+function Page() {
 
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
@@ -14,4 +14,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

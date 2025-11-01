@@ -19,7 +19,8 @@ function Page({params}: { params: { id: string }}) {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [selectedRecipient, setSelectedRecipient] = useState<User | null>(null);
-    const [isLoadingRecipient, setIsLoadingRecipient] = useState(true);
+    const [{/*isLoadingRecipient*/}, setIsLoadingRecipient] = useState(true);
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resolvedParams = use(params as any)as PageParams;
     const recipientId = resolvedParams.id;
 

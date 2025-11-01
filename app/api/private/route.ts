@@ -16,7 +16,7 @@ export async function GET(request:NextRequest) {
                 { status: 400 }
             )
         }
-        let conversation = await prisma.conversation.findFirst({
+        const conversation = await prisma.conversation.findFirst({
             where:{type:"PRIVATE", AND:[
                 {members:{some:{userId: userId1}}},
                 {members:{some:{userId: userId2}}}

@@ -30,14 +30,14 @@ function GroupList() {
   const router = useRouter()
   const [groups, setGroups] = useState<Group[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, {/*setSearchQuery*/}] = useState('')
   const [joinGroupId, setJoinGroupId] = useState<string | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated' || !session?.user) {
       router.push('/auth')
     }
-  }, [status, router])
+  }, [status, router, session])
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -74,7 +74,7 @@ function GroupList() {
             userId: session?.user?.id
             })
         })
-        const data= await res.json()
+        await res.json()
         if (!res.ok) {
             throw new Error('Failed to join')
   

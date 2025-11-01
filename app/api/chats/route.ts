@@ -144,7 +144,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userId, otherUserId, type = 'PRIVATE' } = body;
+    const { userId, otherUserId } = body;
 
     if (!userId || !otherUserId) {
       return NextResponse.json(

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -55,13 +55,7 @@ export default function ChatsPage() {
     }
   }, [status, router])
 
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchChats()
-    }
-  }, [session?.user?.id])
-
-  const fetchChats = async () => {
+  const fetchChats = useCallback(async () => {
     try {
       setIsLoading(true)
       const response = await fetch(`/api/chats?userId=${session?.user?.id}`)
@@ -75,7 +69,13 @@ export default function ChatsPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  },[session?.user?.id, setChats, setIsLoading])
+  
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchChats()
+    }
+  }, [session?.user?.id, fetchChats])
 
   const handleChatClick = (chat: Chat) => {
     if (chat.type === 'private') {

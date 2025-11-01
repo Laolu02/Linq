@@ -5,11 +5,12 @@ import io, { Socket } from 'socket.io-client';
 import { IoSend } from 'react-icons/io5';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Image from 'next/image';
+import { Messages } from '@prisma/client';
 
 
 //let socket :  Socket
 type Message={
-    id: number
+    id: number| string
     text: string
     self: boolean
     time: string
@@ -32,11 +33,28 @@ interface Group {
 }
 
 interface ChatAreaProps {
-  currentUser: any 
+  currentUser: User 
   group: Group 
 }
 
-const fetchMessages = async (groupId: string): Promise<any[]> => {
+interface UserGroupEventData {
+    userId: string;
+}
+interface SocketMessageData {
+    id: string | number;
+    text: string;
+    type: 'GROUP' | 'group'; 
+    groupId: string;
+    senderId: string;
+    createdAt: string;
+    sender?: {
+        id: string;
+        name: string;
+        image: string | null;
+    };
+}
+
+const fetchMessages = async (groupId: string): Promise<Message[]> => {
     console.log(`[API] Fetching messages for group ${groupId} ...`);
    try {
     const res = await fetch(`/api/messages/group?groupId=${groupId}`);
@@ -63,11 +81,11 @@ const postMessage = async (messageData:{text:string, groupId: string, senderId: 
             }),
     });
     if (!res.ok) {
-      const error= await res.json();
-      throw new Error(error.error||'Failed to message DB');
+      const responseError = await res.json();
+      throw new Error(responseError.error||'Failed to message DB');
     }
     console.log("Message persisted successfully.");
-  } catch (error) {
+  } catch (error:unknown) {
     console.log("Message persisted successfully.");
   }
 }
@@ -87,6 +105,7 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
         try {
           const history = await fetchMessages(group.id);
           console.log("History Received:", history);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const displayMessages = history.map((msg:any)=>({
             id:msg.id, text: msg.message, self: msg.senderId === currentUser.id,
              time: new Date(msg.createdAt).toLocaleTimeString([], {
@@ -127,7 +146,8 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
             userId: currentUser.id, 
             groupId: group.id 
         });
-      socket.on('newMessage',(data) => {
+      
+      socket.on('newMessage',(data: SocketMessageData) => {
         console.log("📩 Received:", data);
         if (data.type?.toUpperCase() === 'GROUP' && data.groupId === group.id) {
           const isCurrentSender = data.senderId === currentUser.id
@@ -145,23 +165,25 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
         } console.log("RECEIVED:", data.type, "Target:", data.groupId, "Current:", group.id);
       }
     );
-     socket.on('userJoinedGroup', (data: any) => {
+     socket.on('userJoinedGroup', (data: UserGroupEventData) => {
             console.log(`User ${data.userId} joined the group`);
         });
 
-        socket.on('userLeftGroup', (data: any) => {
+        socket.on('userLeftGroup', (data: UserGroupEventData) => {
             console.log(`User ${data.userId} left the group`);
         });
 
-        
-        socket.on('error', (data: any) => {
-            console.error('Socket error:', data.message);
-            alert(data.message);
+        socket.on('error', (data: unknown) => {
+           if (typeof data === 'object' && data !== null && 'message' in data) {
+        alert((data as { message: string }).message); // Safely cast and access
+    } else {
+        alert('An unknown socket error occurred.');
+    };
         });
     return () => {
       socket.disconnect();
     };
-  }, [currentUser?.id, group?.id]);
+  }, [currentUser?.id, group?.id, currentUser.name, currentUser.image]);
 
 
 

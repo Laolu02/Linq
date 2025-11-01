@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { signIn, useSession,signOut } from "next-auth/react"
+import { useSession,signOut } from "next-auth/react"
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';

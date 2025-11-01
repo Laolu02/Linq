@@ -32,6 +32,7 @@ export async function GET(
 
     return NextResponse.json(group);
   } catch (error) {
+    console.error("Failed to fetch group:", error);
     return NextResponse.json(
       { error: 'Failed to fetch group' },
       { status: 500 }

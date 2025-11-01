@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-import { error, group } from "console";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+
 
 const prisma= new PrismaClient();
 export async function POST(request:NextRequest) {
@@ -107,8 +107,7 @@ export async function GET(request:NextRequest) {
         const onlyPublic = searchParams.get('onlyPublic') === 'true';
         const search= searchParams.get('search')||"";
 
-        const whereClause: any ={};
-
+        const whereClause: Prisma.GroupWhereInput ={};
         if (onlyPublic) {
             whereClause.isPublic = true
         }
@@ -121,7 +120,7 @@ export async function GET(request:NextRequest) {
 
         if (search) {
             whereClause.OR=[
-                {name:{contains: search, mode:'insentive'}},
+                {name:{contains: search, mode:'insensitive'}},
             ]
         }
 

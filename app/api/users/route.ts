@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
         if (!session) {
             return new NextResponse('Unauthorized', { status: 401 })
         }
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const whereClause:any ={};
         if (currentUserId) {
       whereClause.id = { not: { id: new ObjectId(currentUserId).toString() },};

@@ -79,9 +79,12 @@ export async function POST(request:NextRequest) {
         message:'Joined Group successfully',
         groupmember
     }, {status:201})
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error joinin group:', error);
-        if (error.code === 'P2002') {
+        if (typeof error === 'object' && 
+        error !== null && 
+        'code' in error && 
+        error.code === 'P2002') {
       return NextResponse.json(
         { error: 'You are already a member of this group' },
         { status: 400 }

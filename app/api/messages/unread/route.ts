@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     });
     const unreadCounts = conversations.map(conv => {
       const userMember = conv.members[0];
-      const lastReadAt = userMember?.lastReadAt || new Date(0);
+      //const lastReadAt = userMember?.lastReadAt || new Date(0);
       
       return {
         conversationId: conv.id,

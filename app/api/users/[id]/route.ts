@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -86,10 +86,10 @@ export async function PUT(
       );
     }
 
-    const { name , image, bio } = body;
+    const { name , image, } = body;
 
 
-    const updateData: any = {};
+    const updateData: Prisma.UsersUpdateInput = {};
     if (name !== undefined) updateData.name = name.trim();
     if (image !== undefined) updateData.image = image || null;
 
@@ -130,11 +130,14 @@ export async function PUT(
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating user:', error);
     
    
-    if (error.code === 'P2002') {
+    if (typeof error === 'object' && 
+        error !== null && 
+        'code' in error && 
+        error.code === 'P2002') {
       return NextResponse.json(
         { error: 'Username or email already exists' },
         { status: 409 }
