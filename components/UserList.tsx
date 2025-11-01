@@ -1,5 +1,7 @@
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
+import { IoChevronBack } from "react-icons/io5";
 
 interface User{
     id: string
@@ -34,6 +36,7 @@ const fetchAllUser = async (currentUserId:string):Promise<User[]> => {
 };
 
 function UserList({currentUserId, selectedUser,onSelectUser}: UserlistProps) {
+  const router = useRouter();
    const [users, setUsers] = useState<User[]>([]);
   const [{/*isLoading*/}, setIsLoading] = useState(true);
   const [searchQuery, {/*setSearchQuery*/}] = useState("");
@@ -57,9 +60,16 @@ function UserList({currentUserId, selectedUser,onSelectUser}: UserlistProps) {
     return (
       <div className=" flex flex-col h-full bg-gradient-to-br from-blue-100 via-white to-purple-200 shadow-xl">
        <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-         <h2 className="text-2xl font-bold p-2 mb-2  text-blue-700">
+       <div className="flex items-center ">
+         <button onClick={()=>{router.back()}} aria-label='Back to previous page' className="p-2 text-3xl text-gray-700 rounded-full hover:bg-gray-100 transition-colors mr-3 cursor-pointer" >
+               <IoChevronBack/>
+          </button>
+        <div className="flex-grow">
+           <h2 className="text-xl font-bold  text-blue-700 leading-none">
           Contact More Users
         </h2>
+        </div>
+       </div>
        </div>
         <div className=" divide-y divide-gray-400 flex-1 overflow-y-auto space-y-1">
           {filteredUsers.map((user) => (
@@ -112,36 +122,3 @@ function UserList({currentUserId, selectedUser,onSelectUser}: UserlistProps) {
 }
 
 export default UserList
-
-/*  {filteredUsers.map((user) => (
-          <div
-            key={user.id}
-            onClick={() => onSelectUser(user)}
-            className={`flex items-center p-3 rounded-xl cursor-pointer transition duration-150 border-l-4 ${
-              selectedUser?.id === user.id
-                ? "bg-green-100 border-green-600"
-                : "hover:bg-gray-50 border-transparent"
-            }`}
-          >
-            <div className="relative w-12 h-12 flex-shrink-0">
-              <Image
-                src={user.image || "/dp.jpeg"}
-                alt={user.name || "User"}
-                fill
-                className="rounded-full object-cover"
-              />
-            </div>
-
-            <div className="ml-3">
-              <p className="font-semibold text-gray-800 truncate max-w-[150px]">
-                {user.name || "Unknown User"}
-              </p>
-              <p className="text-xs text-gray-500">Click to start chat</p>
-            </div>
-          </div>
-        ))}
-        {users.length === 0 && (
-          <p className="text-center text-gray-500 mt-4 text-sm">
-            No other users are available to chat.
-          </p>
-        )} */

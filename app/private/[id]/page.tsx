@@ -49,7 +49,7 @@ function Page({params}: { params: { id: string }}) {
     
     if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen text-xl text-gray-600">
+      <div className="flex items-center justify-center h-screen text-xl text-gray-600">
         Loading Session...
       </div>
     );

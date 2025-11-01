@@ -2,9 +2,10 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import io, { Socket } from 'socket.io-client';
-import { IoSend } from 'react-icons/io5';
+import { IoChevronBack, IoSend } from 'react-icons/io5';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Image from 'next/image';
+import Link from 'next/link';
 
 
 //let socket :  Socket
@@ -171,9 +172,12 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     };
   return (
     <div className="flex flex-col gap-1 h-screen  bg-white bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl">
-        <div className="bg-white border-b rounded-t-xl border-gray-200 px-6 py-4 shadow-sm">
+        <div className="bg-white border-b rounded-t-xl border-gray-200 px-3 py-4 shadow-sm">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
             <div className="flex items-center space-x-3">
+               <Link href="/chats" className="p-2 text-3xl text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer" >
+               <IoChevronBack/>
+              </Link>
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                 <Image
                   src={recipient?.image || "/dp.jpeg"}

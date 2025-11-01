@@ -36,7 +36,7 @@ function Navbar() {
   const AuthLinks = (
     <>
       
-      <Link href="/chat" className="px-3 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition flex items-center space-x-2">
+      <Link href="/chats" className="px-3 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition flex items-center space-x-2">
         <IoIosChatboxes className="w-5 h-5" />
         <span className="hidden sm:inline"></span>
       </Link>
@@ -88,7 +88,7 @@ function Navbar() {
                 <Link href='/profile' onClick={()=>setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition text-center border">
                 Profile
                 </Link>
-                <Link href='/chat' onClick={()=>setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition text-center border">
+                <Link href='/chats' onClick={()=>setMobileMenuOpen(false)} className="block px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-100 hover:text-blue-600 transition text-center border">
                 Chat
                 </Link>
                 <button 

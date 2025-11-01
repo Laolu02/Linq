@@ -25,7 +25,7 @@ function Page() {
 
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-screen text-gray-500">
+      <div className="flex items-center justify-center h-screen text-gray-500">
         Loading session...
       </div>
     );

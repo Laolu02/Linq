@@ -16,7 +16,7 @@ const [isLoading, setIsLoading]= useState(false);
 const [error, setError]=useState('');
 if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center h-screen">
         <p className="text-gray-500">Loading...</p>
       </div>
     )

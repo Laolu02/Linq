@@ -5,6 +5,8 @@ import io, { Socket } from 'socket.io-client';
 import { IoSend } from 'react-icons/io5';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Image from 'next/image';
+import { IoChevronBack } from "react-icons/io5";
+import Link from 'next/link';
 
 
 //let socket :  Socket
@@ -205,8 +207,11 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
     };
   return (
     <div className="flex flex-col  h-screen  bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden rounded-xl">
-      <div className="bg-white border-b rounded-t-xl border-gray-200 px-6 py-4 shadow-sm">
+      <div className="bg-white border-b rounded-t-xl border-gray-200 px-3 py-4 shadow-sm">
         <div className="flex items-center justify-between max-w-5xl mx-auto text-blue-950 relative">
+          <Link href="/chats" className="p-2 text-3xl text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer" >
+          <IoChevronBack/>
+          </Link>
           <div className="flex items-center gap-3">
             <Image
               src={group.avatar || "/group.png"}

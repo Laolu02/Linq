@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { BsGlobe, BsLock, BsPlus } from 'react-icons/bs'
 import Image from 'next/image'
+import { IoChevronBack } from 'react-icons/io5'
 
 
 interface Group {
@@ -100,7 +101,7 @@ const filterGroup = groups.filter(group=>
 )
 if (status === 'loading' || !session) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center h-screen">
         <p className="text-gray-500">Loading...</p>
       </div>
     )
@@ -109,11 +110,16 @@ if (status === 'loading' || !session) {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text 6xl font-bold text-gray-900 mb-2">
+          <div className="flex items-center p-4 border-b border-gray-200">
+            <button onClick={()=>{router.back()}} aria-label='Back to previous page' className="p-2 text-3xl text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer" >
+               <IoChevronBack/>
+          </button>
+          <div className='flex-grow'>
+             <h1 className="text-xl font-bold text-gray-900 mb-2 leading-none">
               Groups
             </h1>
-            <p className="text-gray-700">Discover and connect more </p>
+            <p className=" text-sm text-gray-700">Discover and connect more </p>
+          </div>
           </div>
           <button
             onClick={() => router.push("/chats/new")}

@@ -70,7 +70,7 @@ export default function ChatsPage() {
       setIsLoading(false)
     }
   },[session?.user?.id, setChats, setIsLoading])
-  
+
   useEffect(() => {
     if (session?.user?.id) {
       fetchChats()
@@ -79,7 +79,7 @@ export default function ChatsPage() {
 
   const handleChatClick = (chat: Chat) => {
     if (chat.type === 'private') {
-      router.push(`/chat/${chat.otherUser.id}`)
+      router.push(`/private/${chat.otherUser.id}`)
     } else {
       router.push(`/chat/${chat.id}`)
     }
@@ -199,7 +199,6 @@ export default function ChatsPage() {
                   className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <div className="flex items-start gap-3">
-                    {/* Avatar */}
                     <div className="relative flex-shrink-0">
                       {chat.type === "private" ? (
                         chat.otherUser.avatar ? (
@@ -234,8 +233,6 @@ export default function ChatsPage() {
                         </div>
                       )}
                     </div>
-
-                    {/* Chat Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1">
                         <h3 className="font-semibold text-gray-900 truncate">
@@ -268,8 +265,6 @@ export default function ChatsPage() {
                         </p>
                       )}
                     </div>
-
-                    {/* Unread Badge */}
                     {chat.unreadCount > 0 && (
                       <div className="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
                         {chat.unreadCount > 99 ? "99+" : chat.unreadCount}
@@ -281,8 +276,6 @@ export default function ChatsPage() {
             </div>
           )}
         </div>
-
-        {/* New Chat Button */}
         <div className="fixed bottom-8 right-8 flex flex-row gap-4 space-y-4">
           <button
             onClick={() => router.push("/chat/list")}
