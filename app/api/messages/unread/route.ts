@@ -21,7 +21,12 @@ export async function GET(request: NextRequest) {
       },
       include: {
         members: {
-          where: { userId }
+          where: { userId },
+          select:{lastReadAt:true}
+        },
+        messages:{
+          select:{createdAt:true, senderId:true, isDeleted:true},
+          orderBy:{createdAt:'desc'}
         },
         _count: {
           select: {
@@ -36,11 +41,17 @@ export async function GET(request: NextRequest) {
     });
     const unreadCounts = conversations.map(conv => {
       const userMember = conv.members[0];
-      //const lastReadAt = userMember?.lastReadAt || new Date(0);
+      const lastReadAt = userMember?.lastReadAt || new Date(0);
+
+      const unreadMessages = conv.messages.filter(msg => 
+        msg.senderId !== userId &&
+        new Date(msg.createdAt).getTime() > new Date(lastReadAt).getTime() &&
+        !msg.isDeleted
+    );
       
       return {
         conversationId: conv.id,
-        unreadCount: conv._count.messages 
+        unreadCount: unreadMessages.length
       };
     });
 

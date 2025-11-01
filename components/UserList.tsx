@@ -35,9 +35,9 @@ const fetchAllUser = async (currentUserId:string):Promise<User[]> => {
 
 function UserList({currentUserId, selectedUser,onSelectUser}: UserlistProps) {
    const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [{/*isLoading*/}, setIsLoading] = useState(true);
+  const [searchQuery, {/*setSearchQuery*/}] = useState("");
+  //const [error, setError] = useState<string | null>(null);
 
   useEffect(()=>{
    const currentUser= currentUserId;

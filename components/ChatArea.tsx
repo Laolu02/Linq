@@ -5,7 +5,6 @@ import io, { Socket } from 'socket.io-client';
 import { IoSend } from 'react-icons/io5';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Image from 'next/image';
-import { Messages } from '@prisma/client';
 
 
 //let socket :  Socket
@@ -86,7 +85,7 @@ const postMessage = async (messageData:{text:string, groupId: string, senderId: 
     }
     console.log("Message persisted successfully.");
   } catch (error:unknown) {
-    console.log("Message persisted successfully.");
+    console.error("Message persisted successfully.", error);
   }
 }
 
