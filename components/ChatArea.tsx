@@ -85,7 +85,7 @@ const postMessage = async (messageData:{text:string, groupId: string, senderId: 
     }
     console.log("Message persisted successfully.");
   } catch (error:unknown) {
-    console.error("Message persisted successfully.", error);
+    console.error("Message persisted successfully.",error);
   }
 }
 
@@ -112,7 +112,7 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
               minute: '2-digit',
             }), senderId: msg.senderId,
               senderName: msg.sender?.name,
-             senderImage: msg.sender?.image
+               image: msg.sender?.image
           }));
           setMessages(displayMessages);
         } catch (error) {
@@ -159,7 +159,7 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
                     self: isCurrentSender,
                     senderId: data.senderId,
                     senderName: isCurrentSender ? currentUser.name : data.sender?.name, 
-                    senderImage: isCurrentSender ? currentUser.image : data.sender?.image
+                    image: isCurrentSender ? currentUser.image : data.sender?.image
           },]);
         } console.log("RECEIVED:", data.type, "Target:", data.groupId, "Current:", group.id);
       }
@@ -189,7 +189,7 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
     const sendMessage = ()=>{ 
       const messageText = message.trim();
         if(!messageText) return;
-        const messageData={text:messageText, senderId:currentUser.id, groupId:group.id,senderName:currentUser.name, senderImage: currentUser.image };
+        const messageData={text:messageText, senderId:currentUser.id, groupId:group.id,senderName:currentUser.name, image: currentUser.image };
         if (socketRef.current) {
           socketRef.current.emit('groupMessage', messageData)
         } else {
