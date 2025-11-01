@@ -1,15 +1,15 @@
-// 'use client'
+'use client'
 
-// import { useParams } from 'next/navigation'
-// import { useSession } from 'next-auth/react'
-// import { useEffect, useState } from 'react'
-// import ChatArea from '@/components/ChatArea'
+import { useParams } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
+import ChatArea from '@/components/ChatArea'
 
 
-// export default function GroupChatPage() {
-//   const params = useParams()
-//   const { data: session } = useSession()
-//   const [group, setGroup] = useState(null)
+export default function GroupChatPage() {
+  const params = useParams()
+  const { data: session } = useSession()
+  const [group, {/*setGroup*/}] = useState(null)
 
 //   useEffect(() => {
 //     if (params.id) {
@@ -23,12 +23,12 @@
 //     setGroup(data.group)
 //   }
 
-//   if (!session || !group) return <div>Loading...</div>
+  if (!session || !group) return <div>Loading...</div>
 
-//   return (
-//     <ChatArea
-//       currentUser={session.user}
-//       group={group}
-//     />
-//   )
-// }
+  return (
+    <ChatArea
+      currentUser={session.user}
+      group={group}
+    />
+  )
+}
