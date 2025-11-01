@@ -15,7 +15,7 @@ export async function GET(request:NextRequest) {
             )
         }
         const messages= await prisma.messages.findMany({
-            where:{groupId: groupId},
+            where:{groupId: groupId, isDeleted:false},
             orderBy:{createdAt:"asc"},
 
             include:{sender:{
