@@ -5,7 +5,7 @@ import { FaLinkedin } from "react-icons/fa";
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-gray-400 p-4 text-center py-4 px-6 w-screen">
+    <footer className="bg-gray-800 text-gray-400 p-4 text-center py-4 px-6 w-full">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
             <Image src="/logorb.png" alt="Linq Logo" width={80} height={80} className="mb-4 object-contain opacity-80" />
@@ -33,7 +33,7 @@ export const Footer = () => {
             </span>
           </div>
         </div>
-        <div className="border-t border-gray-700 mt-4 pt-4 text-center text-sm container mx-auto">
+        <div className="border-t border-gray-700 mt-4 pt-4 text-center text-sm max-w-7xl container mx-auto">
         <p>
           &copy; {new Date().getFullYear()} Linq Corp. All Rights
           Reserved.

@@ -279,7 +279,7 @@ export default function ChatsPage() {
         <div className="fixed bottom-8 right-8 flex flex-row gap-4 space-y-4">
           <button
             onClick={() => router.push("/chat/list")}
-            title="Group Chat"
+            title="Group Chat" aria-label='More Groups'
             className="w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110"
           >
             <BsPeopleFill className="w-6 h-6" />
@@ -287,7 +287,7 @@ export default function ChatsPage() {
 
           <button
             onClick={() => router.push("/users")}
-            title="Private Chat"
+            title="Private Chat" aria-label='More People'
             className="w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110"
           >
             <BsChatDots className="w-6 h-6" />

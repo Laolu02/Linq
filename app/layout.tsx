@@ -34,8 +34,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <SocketProvider>
             <Navbar />
-            <main className="w-[90%] m-auto"> {children} </main>
-            <Footer />
+            <div className="w-[90%] m-auto"> {children} </div>
           </SocketProvider>
         </NextAuthProvider>
       </body>

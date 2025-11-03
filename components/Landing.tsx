@@ -3,6 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link';
 import {  FiZap } from 'react-icons/fi';
+import { Footer } from './Footer';
 //import { FiMessageCircle, FiZap, FiShield, FiUsers, FiGlobe, FiCheck } from 'react-icons/fi';
 
 function Landing() {
@@ -115,35 +116,3 @@ function Landing() {
 }
 
 export default Landing
-
-
-/*<div>
-      <main className="min-h-[calc(100vh-64px)] bg-gray-50 p-4">
-        <div className="max-w-4xl mx-auto flex flex-col items-center justify-center h-full py-16">
-          <div className="mb-8 flex justify-center">
-            <Image
-              src="/logorb.png"
-              alt="Linq Logo"
-              width={1500}
-              height={1500}
-              className="object-contain w-[300px] sm:w-[400px] md:w-[500px] lg:w-[600px] h-auto "
-            />
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 text-center">
-            Connect <span className="text-blue-600">Instantly.</span>
-            <br />
-            Chat <span className="text-blue-600">Seamlessly.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-8 text-center max-w-2xl">
-            Experience real-time, secure messaging with people across the globe.
-            Sign in with your favorite provider or a simple credential.
-          </p>
-           <Link
-          href="/register"
-          className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:scale-95 transition shadow-sm hover:shadow-md"
-        >
-          Get Started
-        </Link>
-        </div>
-      </main>
-    </div>*/
