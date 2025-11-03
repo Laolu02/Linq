@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NextAuthProvider from "@/utils/providers/NextAuth";
 import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { SocketProvider } from "@/utils/Socket";
 
 const geistSans = Geist({
@@ -34,7 +33,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <SocketProvider>
             <Navbar />
-            <div className="w-[90%] m-auto"> {children} </div>
+            <div className="w-[90%] m-auto overflow-x-hidden"> {children} </div>
           </SocketProvider>
         </NextAuthProvider>
       </body>

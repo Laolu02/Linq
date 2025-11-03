@@ -171,7 +171,7 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
         }
     };
   return (
-    <div className="flex flex-col gap-1 h-screen  bg-white bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl">
+    <div className="flex flex-col gap-1 h-screen w-full bg-white bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl">
         <div className="bg-white border-b rounded-t-xl border-gray-200 px-3 py-4 shadow-sm">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
             <div className="flex items-center space-x-3">

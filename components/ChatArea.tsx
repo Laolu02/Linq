@@ -206,7 +206,7 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
             setMessage('');
     };
   return (
-    <div className="flex flex-col  h-screen  bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden rounded-xl">
+    <div className="flex flex-col w-full h-screen  bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden rounded-xl">
       <div className="bg-white border-b rounded-t-xl border-gray-200 px-3 py-4 shadow-sm">
         <div className="flex items-center justify-between max-w-5xl mx-auto text-blue-950 relative">
           <Link href="/chats" className="p-2 text-3xl text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer" >
