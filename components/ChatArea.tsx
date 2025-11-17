@@ -7,6 +7,8 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Image from 'next/image';
 import { IoChevronBack } from "react-icons/io5";
 import Link from 'next/link';
+import { useProfile } from '@/utils/useProfile';
+import ProfileModal from './Profile';
 
 
 //let socket :  Socket
@@ -98,6 +100,7 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
     const [isLoading, setIsLoading] = useState(false);
     const socketRef = useRef<Socket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const { isOpen, profileId, profileType, openGroupProfile, openUserProfile, closeProfile } = useProfile()
    
   useEffect(()=>{
     const loadMessages = async () => {
@@ -212,7 +215,8 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
           <Link href="/chats" className="p-2 text-3xl text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer" >
           <IoChevronBack/>
           </Link>
-          <div className="flex items-center gap-3">
+          <div onClick={()=>openGroupProfile(group.id)} 
+           className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition">
             <Image
               src={group.avatar || "/group.png"}
               alt={group.name}
@@ -268,7 +272,8 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
                         } text-shadow-black`}
                 >
                   {!m.self && m.senderName && (
-                    <p className="text-xs font-semibold mb-1 text-blue-600">
+                    <p onClick={()=>openUserProfile(m.senderId)}
+                     className="text-xs font-semibold mb-1 text-blue-600">
                       {m.senderName}
                     </p>
                   )}
@@ -293,6 +298,10 @@ function ChatArea({currentUser, group}: ChatAreaProps) {
                 )}
               </div>
             ))}
+            {profileId && (
+              <ProfileModal
+              profileId={profileId} profileType={profileType} isOpen={isOpen} onClose={closeProfile}/>
+            )}
             <div ref={messagesEndRef}/>
           </div>
         )}

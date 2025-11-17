@@ -179,7 +179,6 @@ export async function PATCH(
       );
     }
 
-    // Update online status
     const updatedUser = await prisma.users.update({
       where: { id: userId },
       data: {

@@ -6,6 +6,8 @@ import { IoChevronBack, IoSend } from 'react-icons/io5';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useProfile } from '@/utils/useProfile';
+import ProfileModal from './Profile';
 
 
 //let socket :  Socket
@@ -39,7 +41,7 @@ interface User {
 }
 interface ChatAreaProps {
   currentUser: User;
-  recipient: User | null;
+  recipient: User|null;
 }
 const fetchMessagesFor = async (userId1: string, userId2: string): Promise<StoredMessage[]> => {
     console.log(`[API] Fetching messages between ${userId1} and ${userId2}...`);
@@ -65,6 +67,8 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
     const [isLoading, setIsLoading] = useState(false);
     const socketRef = useRef<Socket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const { isOpen, profileId, profileType, openUserProfile, closeProfile } = useProfile();
+       
 
      useEffect(()=>{
         const loadMessages = async () => {
@@ -178,7 +182,8 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
                <Link href="/chats" className="p-2 text-3xl text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer" >
                <IoChevronBack/>
               </Link>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+              <div onClick={() => recipient && openUserProfile(recipient.id)}
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold gap-3 cursor-pointer hover:bg-gray-50 transition">
                 <Image
                   src={recipient?.image || "/dp.jpeg"}
                   alt="Profile"
@@ -242,6 +247,10 @@ function PrivateChat({currentUser, recipient}: ChatAreaProps) {
               <div ref={messagesEndRef} />
             </div>
           )}
+          {profileId && (
+                        <ProfileModal
+                        profileId={profileId} profileType={profileType} isOpen={isOpen} onClose={closeProfile}/>
+                      )}
         </div>
         <div className="bg-white border-t rounded-b-xl border-gray-200 px-4 py-4 shadow-lg">
           <div className="max-w-5xl mx-auto flex items-center space-x-3">
