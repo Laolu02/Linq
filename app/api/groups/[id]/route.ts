@@ -3,6 +3,12 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+interface GroupProfile {
+  name: string;
+  description: string | null;
+  avatar: string | null;
+}
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -157,12 +163,11 @@ export async function PUT(
         { status: 403 }
       );
     }
-    const updateData: any = {};
+    const updateData: Partial<GroupProfile> = {};
     if (name !== undefined) updateData.name = name.trim();
     if (description !== undefined) updateData.description = description?.trim() || null;
     if (avatar !== undefined) updateData.avatar = avatar || null;
 
-    // Update group
     const updatedGroup = await prisma.group.update({
       where: { id: groupId },
       data: updateData,

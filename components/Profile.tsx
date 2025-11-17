@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 import { IoCalendarOutline, IoChatbubblesOutline, IoClose, IoExitOutline, IoMailOutline, IoPeopleOutline, IoPersonOutline, IoSettingsOutline } from "react-icons/io5"
 import { RiAdminFill } from "react-icons/ri";
@@ -71,7 +71,7 @@ export default function ProfileModal({profileId, profileType, isOpen, onClose}: 
     const [isLoading, setIsLoading]= useState(true)
     const [error, setError] = useState<string|null>(null)
 
-    const fetchProfile = async () => {
+    const fetchProfile = useCallback( async () => {
         try {
             setIsLoading(true)
             setError(null)
@@ -95,13 +95,13 @@ export default function ProfileModal({profileId, profileType, isOpen, onClose}: 
         } finally {
             setIsLoading(false)
         }
-    }
+    },[profileId, profileType])
 
     useEffect(()=>{
         if (isOpen && profileId) {
-            fetchProfile()
+            fetchProfile();
         }
-    }, [isOpen, profileId, profileType])
+    }, [isOpen, profileId, profileType, fetchProfile])
 
     const handleLeaveGroup = async () => {
         if(!profile || profile.type !== 'group') return
