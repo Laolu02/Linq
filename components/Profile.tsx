@@ -140,11 +140,26 @@ export default function ProfileModal({profileId, profileType, isOpen, onClose}: 
 
         return lastSeenDate.toLocaleDateString()
     }
+    const maskEmail = ( email: string | null | undefined): string =>{
+      if (!email|| email.length < 4 ) {
+        return email || 'N/A'
+      }
+      const atIndex = email.indexOf('@');
+      if (atIndex <= 2) {
+        return email;
+      }
+      const usernam = email.substring(0, atIndex);
+      const domain = email.substring(atIndex)
+
+      const visiblePart = usernam.substring(0,3);
+      const maskedPart = '****'
+       return visiblePart+maskedPart+domain
+    }
 
     if(!isOpen) return null
     return (
       <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-w rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
           <div className="relative">
             <div className="h-32 bg-gradient-to-r from-yellow-500 to-lime-600 rounded-t-2xl"></div>
             <button
@@ -189,7 +204,7 @@ export default function ProfileModal({profileId, profileType, isOpen, onClose}: 
                   onClick={fetchProfile}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
-                  Retry
+                  Try Again
                 </button>
               </div>
             ) : profile ? (
@@ -223,7 +238,7 @@ export default function ProfileModal({profileId, profileType, isOpen, onClose}: 
                       )}
                       <p className="text-gray-500 flex items-center gap-2">
                         <IoMailOutline className="w-4 h-4" />
-                        {profile.email}
+                        {maskEmail(profile.email)}
                       </p>
                       {profile.isOnline ? (
                         <p className="text-green-600 font-medium mt-2">
@@ -361,7 +376,7 @@ export default function ProfileModal({profileId, profileType, isOpen, onClose}: 
                     </div>
                   )}
                 <div className="flex gap-3"> 
-                  {profile.type === "group"  && (
+                  {profile.type === "group" && profile.userRole !== 'ADMIN'  && (
                     <button
                       onClick={handleLeaveGroup}
                       className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition font-medium"
@@ -378,6 +393,7 @@ export default function ProfileModal({profileId, profileType, isOpen, onClose}: 
                       Settings
                     </button>
                   )}
+                  
                 </div>
               </>
             ) : null}
